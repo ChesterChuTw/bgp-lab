@@ -1,52 +1,68 @@
 version: "3"
-services:
-  r1:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: r1
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    networks:
-      net100:
-        ipv4_address: 192.168.100.1
-      net101:
-        ipv4_address: 192.168.101.1
-    volumes:
-      - ./r1:/etc/frr:rw
-    command: "/bin/bash /etc/frr/start_frr.sh"
 
-  r2:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: r2
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    networks:
-      net101:
-        ipv4_address: 192.168.101.2
-      net200:
-        ipv4_address: 192.168.200.2
-    volumes:
-      - ./r2:/etc/frr:rw
-    command: "/bin/bash /etc/frr/start_frr.sh"
-
-networks:
-  net100:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.100.0/24
+networks:  
   net101:
+    enable_ipv6: false
     driver: bridge
     ipam:
+      driver: default
       config:
-        - subnet: 192.168.101.0/24
+      - subnet: 192.168.101.0/24
+        gateway: 192.168.101.1
+  net100:
+    enable_ipv6: false
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 192.168.100.0/24
+        gateway: 192.168.100.1
   net200:
+    enable_ipv6: false
     driver: bridge
     ipam:
+      driver: default
       config:
-        - subnet: 192.168.200.0/24
+      - subnet: 192.168.200.0/24
+        gateway: 192.168.200.1
+
+services: 
+  frr100:
+    cap_add:
+      - CAP_NET_RAW
+      - NET_ADMIN
+      - SYS_ADMIN
+    privileged: false
+    image: ksator/frr:1.0
+    container_name: frr100
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./frr100:/etc/frr:rw
+    command: "/bin/bash /etc/frr/start_frr.sh"
+    networks:
+      net101:
+        ipv4_address: 192.168.101.100
+      net100:
+        ipv4_address: 192.168.100.100
+
+  frr200:
+    cap_add:
+      - CAP_NET_RAW
+      - NET_ADMIN
+      - SYS_ADMIN
+    privileged: false
+    image: ksator/frr:1.0
+    container_name: frr200
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./frr200:/etc/frr:rw
+    command: "/bin/bash /etc/frr/start_frr.sh"
+    networks:
+      net101:
+        ipv4_address: 192.168.101.200
+      net200:
+        ipv4_address: 192.168.200.200
