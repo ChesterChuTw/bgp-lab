@@ -1,68 +1,53 @@
-version: "3"
-
-networks:  
-  net101:
-    enable_ipv6: false
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 192.168.101.0/24
-        gateway: 192.168.101.1
-  net100:
-    enable_ipv6: false
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 192.168.100.0/24
-        gateway: 192.168.100.1
-  net200:
-    enable_ipv6: false
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 192.168.200.0/24
-        gateway: 192.168.200.1
-
-services: 
-  frr100:
+version: "3.9"
+services:
+  frr-100-r10:
+    image: quay.io/frrouting/frr:10.2.2
+    container_name: frr-100-r10
     cap_add:
-      - CAP_NET_RAW
       - NET_ADMIN
+      - NET_RAW
       - SYS_ADMIN
-    privileged: false
-    container_name: frr100
-    # build:
-    #   context: ./
-    #   dockerfile: Dockerfile
-    image: frrouting/frr:latest
-    volumes:
-      - ./frr100:/etc/frr:rw
-    command: "/bin/bash /etc/frr/start_frr.sh"
     networks:
-      net101:
-        ipv4_address: 192.168.101.100
       net100:
-        ipv4_address: 192.168.100.100
-
-  frr200:
-    cap_add:
-      - CAP_NET_RAW
-      - NET_ADMIN
-      - SYS_ADMIN
-    privileged: false
-    container_name: frr200
-    # build:
-    #   context: ./
-    #   dockerfile: Dockerfile
-    image: frrouting/frr:latest
-    volumes:
-      - ./frr200:/etc/frr:rw
-    command: "/bin/bash /etc/frr/start_frr.sh"
-    networks:
+        ipv4_address: 10.0.100.10
       net101:
-        ipv4_address: 192.168.101.200
+        ipv4_address: 10.0.101.100
+    volumes:
+      - ./frr-100-r10/daemons:/etc/frr/daemons
+      - ./frr-100-r10/frr.conf:/etc/frr/frr.conf
+      - ./frr-100-r10/start_frr.sh:/etc/frr/start_frr.sh
+      - ./frr-100-r10/vtysh.conf:/etc/frr/vtysh.conf
+    command: "/bin/bash /etc/frr/start_frr.sh"
+
+  frr-200-r10:
+    image: quay.io/frrouting/frr:10.2.2
+    container_name: frr-200-r10
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    networks:
       net200:
-        ipv4_address: 192.168.200.200
+        ipv4_address: 10.0.200.10
+      net101:
+        ipv4_address: 10.0.101.200
+    volumes:
+      - ./frr-200-r10/daemons:/etc/frr/daemons
+      - ./frr-200-r10/frr.conf:/etc/frr/frr.conf
+      - ./frr-200-r10/start_frr.sh:/etc/frr/start_frr.sh
+      - ./frr-200-r10/vtysh.conf:/etc/frr/vtysh.conf
+    command: "/bin/bash /etc/frr/start_frr.sh"
+
+networks:
+  net100:
+    ipam:
+      config:
+        - subnet: 10.0.100.0/24
+  net101:
+    ipam:
+      config:
+        - subnet: 10.0.101.0/24
+  net200:
+    ipam:
+      config:
+        - subnet: 10.0.200.0/24
