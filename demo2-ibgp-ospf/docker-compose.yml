@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  frr-100-r10:
+    image: quay.io/frrouting/frr:10.2.2
+    container_name: frr-100-r10
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    networks:
+      net100:
+        ipv4_address: 10.0.100.10
+    volumes:
+      - ./frr-100-r10/daemons:/etc/frr/daemons
+      - ./frr-100-r10/frr.conf:/etc/frr/frr.conf
+      - ./frr-100-r10/start_frr.sh:/etc/frr/start_frr.sh
+      - ./frr-100-r10/vtysh.conf:/etc/frr/vtysh.conf
+    command: "/bin/bash /etc/frr/start_frr.sh"
+
+  frr-100-r11:
+    image: quay.io/frrouting/frr:10.2.2
+    container_name: frr-100-r11
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    networks:
+      net100:
+        ipv4_address: 10.0.100.11
+    volumes:
+      - ./frr-100-r11/daemons:/etc/frr/daemons
+      - ./frr-100-r11/frr.conf:/etc/frr/frr.conf
+      - ./frr-100-r11/start_frr.sh:/etc/frr/start_frr.sh
+      - ./frr-100-r11/vtysh.conf:/etc/frr/vtysh.conf
+    command: "/bin/bash /etc/frr/start_frr.sh"
+
+networks:
+  net100:
+    ipam:
+      config:
+        - subnet: 10.0.100.0/24
