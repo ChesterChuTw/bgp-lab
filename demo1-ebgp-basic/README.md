@@ -24,10 +24,6 @@ C>* 192.168.101.0/24 is directly connected, eth1
 C>* 192.168.100.0/24 is directly connected, eth0
 ```
 
-- `C>* 192.168.100.0/24`：本地直連網段
-- `C>* 192.168.101.0/24`：與 r2 對接的介面
-- `B>* 192.168.200.0/24`：透過 BGP 從 r2 學到
-
 | 符號/代碼    | 意義                              |
 | -------- | ------------------------------- |
 | `C`      | Connected，直連路由（本地介面）            |
@@ -37,6 +33,13 @@ C>* 192.168.100.0/24 is directly connected, eth0
 | `via`    | 指定下一跳 IP 與出介面                   |
 | `[20/0]` | BGP 路由度量（LocalPref/Metric）預設 20 |
 
+- `C>* 192.168.100.0/24`：本地直連網段
+- `C>* 192.168.101.0/24`：與 r2 對接的介面
+- `B>* 192.168.200.0/24`：透過 BGP 從 r2 學到
+- FIB: Forwarding Information Base, 實際由 Linux kernel 或硬體轉送封包時參考的路由表
+- RIB: Routing Information Base, Routing daemon（如 bgpd）維護的所有可能路由集合
+- 在 FRR 中，zebra daemon 會從 RIB 中選出最佳路由（best path），並寫入 FIB
+- 這些被安裝進 FIB 的路由，才會出現在你用 Linux 指令 ip route 查到的表中。
 
 ### `show ip bgp summary`
 - 鄰居：192.168.101.200

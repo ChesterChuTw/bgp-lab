@@ -33,11 +33,11 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
     privileged: false
-    image: ksator/frr:1.0
     container_name: frr100
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    image: frrouting/frr:latest
     volumes:
       - ./frr100:/etc/frr:rw
     command: "/bin/bash /etc/frr/start_frr.sh"
@@ -53,11 +53,11 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
     privileged: false
-    image: ksator/frr:1.0
     container_name: frr200
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    image: frrouting/frr:latest
     volumes:
       - ./frr200:/etc/frr:rw
     command: "/bin/bash /etc/frr/start_frr.sh"
