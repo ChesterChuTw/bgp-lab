@@ -17,7 +17,6 @@ services:
       - ./frr-100-r10/frr.conf:/etc/frr/frr.conf
       - ./frr-100-r10/start_frr.sh:/etc/frr/start_frr.sh
       - ./frr-100-r10/vtysh.conf:/etc/frr/vtysh.conf
-      - ./frr-100-r10/zebra.conf:/etc/frr/zebra.conf
     command: "/bin/bash /etc/frr/start_frr.sh"
 
   frr-200-r10:
@@ -37,7 +36,6 @@ services:
       - ./frr-200-r10/frr.conf:/etc/frr/frr.conf
       - ./frr-200-r10/start_frr.sh:/etc/frr/start_frr.sh
       - ./frr-200-r10/vtysh.conf:/etc/frr/vtysh.conf
-      - ./frr-200-r10/zebra.conf:/etc/frr/zebra.conf
     command: "/bin/bash /etc/frr/start_frr.sh"
 
 networks:
